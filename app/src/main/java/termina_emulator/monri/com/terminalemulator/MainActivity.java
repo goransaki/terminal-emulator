@@ -21,20 +21,7 @@ public class MainActivity extends AppCompatActivity implements CardNfcAsyncTask.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-
-        if (mNfcAdapter == null) {
-            //do something if there are no nfc module on device
-        } else {
-            //do something if there are nfc module on device
-
-            mCardNfcUtils = new CardNfcUtils(this);
-            //next few lines here needed in case you will scan credit card when app is closed
-            mIntentFromCreate = true;
-            onNewIntent(getIntent());
-        }
-
+        setupNfc();
         findViewById(R.id.scan_nfc).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,15 +30,24 @@ public class MainActivity extends AppCompatActivity implements CardNfcAsyncTask.
         });
     }
 
+    void setupNfc() {
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        if (mNfcAdapter != null) {
+            //do something if there are nfc module on device
+
+            mCardNfcUtils = new CardNfcUtils(this);
+            //next few lines here needed in case you will scan credit card when app is closed
+            mIntentFromCreate = true;
+            onNewIntent(getIntent());
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         mIntentFromCreate = false;
-        if (mNfcAdapter != null && !mNfcAdapter.isEnabled()) {
-            //show some turn on nfc dialog here. take a look in the samle ;-)
-        } else if (mNfcAdapter != null) {
-            mCardNfcUtils.enableDispatch();
-        }
+        mCardNfcUtils.enableDispatch();
     }
 
     @Override
