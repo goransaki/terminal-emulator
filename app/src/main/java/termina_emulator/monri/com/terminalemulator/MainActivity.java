@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements CardNfcAsyncTask.
 
     @Override
     public void cardIsReadyToRead() {
+
         String card = mCardNfcAsyncTask.getCardNumber();
         String expiredDate = mCardNfcAsyncTask.getCardExpireDate();
         String cardType = mCardNfcAsyncTask.getCardType();

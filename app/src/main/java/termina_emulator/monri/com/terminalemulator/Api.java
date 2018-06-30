@@ -4,7 +4,7 @@ import io.reactivex.Single;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by jasminsuljic on 30/06/2018.
@@ -19,8 +19,11 @@ public interface Api {
      * @param id
      * @return
      */
-    @GET("enrollment/status/{type}/{id}")
-    Single<EnrollmentStatus> getEnrollmentStatus(@Path("type") String type, @Path("id") String id);
+    @GET("enrollment/status")
+    Single<EnrollmentStatus> getEnrollmentStatus(
+            @Query("type") String type,
+            @Query("id") String id
+    );
 
     /**
      * This endpoint is used to receive user details so we can improve one to one relationship with
@@ -29,8 +32,8 @@ public interface Api {
      * @param id Enrollment id
      * @return
      */
-    @GET("user/enrollment/{id}")
-    Single<User> getEnrolledUser(@Path("id") String id);
+    @GET("user/view")
+    Single<User> getEnrolledUser(@Query("id") String id);
 
     /**
      * New payment with tokenized credit card details.
@@ -38,8 +41,8 @@ public interface Api {
      * @param newCreditCardPayment new credit card payment details
      * @return
      */
-    @POST("order/{order_number}/pay/credit_card")
-    Single<PaymentResponse> payWithCreditCard(@Path("order_number") String orderNumber,
+    @POST("order/pay-credit-card")
+    Single<PaymentResponse> payWithCreditCard(@Query("order_number") String orderNumber,
                                               @Body NewCreditCardPayment newCreditCardPayment);
 
     /**
@@ -49,9 +52,9 @@ public interface Api {
      * @param savedCreditCardPayment savedCreditCardPayment
      * @return
      */
-    @POST("order/{order_number}/pay/cc")
+    @POST("order/pay-with-saved-credit-card")
     Single<PaymentResponse> payWithSavedCreditCard(
-            @Path("order_number") String orderNumber,
+            @Query("order_number") String orderNumber,
             @Body SavedCreditCardPayment savedCreditCardPayment);
 
     /**
@@ -61,15 +64,15 @@ public interface Api {
      * @param EWalletPayment EWalletPayment
      * @return
      */
-    @POST("order/{order_number}/pay/ewallet")
+    @POST("order/pay-ewallet")
     Single<PaymentResponse> payWithEwallet(
-            @Path("order_number") String orderNumber,
+            @Query("order_number") String orderNumber,
             @Body EWalletPayment EWalletPayment);
 
-    @GET("order/pending/{order_number}")
-    Single<PendingOrder> getPendingOrder(@Path("order_number") String orderNumber);
+    @GET("order/pending")
+    Single<PendingOrder> getPendingOrder(@Query("order_number") String orderNumber);
 
-    @GET("order/completed/{order_number}")
-    Single<PendingOrder> getCompletedOrder(@Path("order_number") String orderNumber);
+    @GET("order/completed")
+    Single<PendingOrder> getCompletedOrder(@Query("order_number") String orderNumber);
 
 }
