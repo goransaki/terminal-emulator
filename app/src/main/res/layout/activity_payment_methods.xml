@@ -30,20 +30,6 @@
 
         </android.support.v7.widget.RecyclerView>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-
-            android:layout_marginBottom="15dp">
-
-            <Button
-                android:layout_width="200dp"
-                android:id="@+id/pay_with_selected_card"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/pay" />
-        </RelativeLayout>
-
 
     </LinearLayout>
 

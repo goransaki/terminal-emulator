@@ -1,22 +1,22 @@
 {
   "methods": [
     {
-      "title": "Debit Card",
-      "subtitle": "RSD Account ending in ****-511",
+      "title": "Use this card",
+      "subtitle": "Account ending in **-8911",
       "image": "mastercard",
-      "balance": "34000 RSD"
-    },
-    {
-      "title": "Debit Card",
-      "subtitle": "EUR Account ending in ****-891",
-      "image": "mastercard",
-      "balance": "3400 EUR"
+      "balance": ""
     },
     {
       "title": "Bank Account",
-      "subtitle": "RSD Account, Addiko Bank, Terazije 45",
+      "subtitle": "RSD Account, Addiko Bank",
       "image": "bank_account",
       "balance": "78000 RSD"
+    },
+    {
+      "title": "Loyalty Card",
+      "subtitle": "MAXI Loyalty Card",
+      "image": "maxi",
+      "balance": "200 POINTS"
     },
     {
       "title": "Crypto Currency Account",
@@ -25,10 +25,10 @@
       "balance": "0.1112342 BTC"
     },
     {
-      "title": "Loyalty Card",
-      "subtitle": "MAXI Loyalty Card",
-      "image": "maxi",
-      "balance": "200 POINTS"
+      "title": "Credit Card",
+      "subtitle": "RSD Account ending in **-5112",
+      "image": "mastercard",
+      "balance": ""
     }
   ]
 }

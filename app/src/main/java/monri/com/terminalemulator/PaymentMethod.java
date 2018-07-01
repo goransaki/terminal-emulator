@@ -8,81 +8,32 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class PaymentMethod {
-    String type;
-    @SerializedName("default_pm")
-    boolean defaultPaymentMethod;
 
-    // CC related
-    @SerializedName("masked_pan")
-    String maskedPan;
-    @SerializedName("card_type")
-    String cardType;
-    @SerializedName("exp_date")
-    String expDate;
-    @SerializedName("card_holder")
-    String cardHolder;
+    @SerializedName("title")
+    String title;
 
-    // BANK ACCOUNT RELATED
-    @SerializedName("name")
-    String name;
-    @SerializedName("bank_details")
-    String bankDetails;
+    @SerializedName("subtitle")
+    String subtitle;
 
-    // Crypto currency related
-    @SerializedName("currency_type")
-    String currencyType;
-    @SerializedName("address")
-    String address;
+    @SerializedName("image")
+    String image;
 
-    public boolean isCard() {
-        return type.equals("card");
+    @SerializedName("balance")
+    String balance;
+
+    public String getTitle() {
+        return title;
     }
 
-    public boolean isBankAccount() {
-        return type.equals("bank_account");
+    public String getSubtitle() {
+        return subtitle;
     }
 
-    public boolean isCryptoCurrency() {
-        return type.equals("crypto_currency");
+    public String getImage() {
+        return image;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public boolean isDefaultPaymentMethod() {
-        return defaultPaymentMethod;
-    }
-
-    public String getMaskedPan() {
-        return maskedPan;
-    }
-
-    public String getCardType() {
-        return cardType;
-    }
-
-    public String getExpDate() {
-        return expDate;
-    }
-
-    public String getCardHolder() {
-        return cardHolder;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getBankDetails() {
-        return bankDetails;
-    }
-
-    public String getCurrencyType() {
-        return currencyType;
-    }
-
-    public String getAddress() {
-        return address;
+    public String getBalance() {
+        return balance;
     }
 }

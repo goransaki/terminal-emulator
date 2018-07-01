@@ -2,6 +2,7 @@ package monri.com.terminalemulator.payment_methods;
 
 import dagger.Module;
 import dagger.Provides;
+import monri.com.terminalemulator.Api;
 import monri.com.terminalemulator.order.OrderPreviewViewModel;
 
 /**
@@ -18,7 +19,7 @@ public class PaymentMethodsModule {
     }
 
     @Provides
-    PaymentMethodsViewModel paymentMethodsViewModel() {
-        return new PaymentMethodsViewModel(paymentMethodsRequest);
+    PaymentMethodsViewModel paymentMethodsViewModel(Api api) {
+        return new PaymentMethodsViewModel(paymentMethodsRequest, api);
     }
 }
