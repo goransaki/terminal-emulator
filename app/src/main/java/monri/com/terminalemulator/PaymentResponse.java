@@ -5,5 +5,5 @@ package monri.com.terminalemulator;
  * TerminalEmulator
  */
 
-class PaymentResponse {
+public class PaymentResponse {
 }

@@ -19,7 +19,7 @@ public interface Api {
      * @param id
      * @return
      */
-    @GET("enrollment/status")
+    @GET("enrollments/status")
     Single<EnrollmentStatus> getEnrollmentStatus(
             @Query("type") String type,
             @Query("id") String id
@@ -32,7 +32,7 @@ public interface Api {
      * @param id Enrollment id
      * @return
      */
-    @GET("user/view")
+    @GET("users/view")
     Single<User> getEnrolledUser(@Query("id") String id);
 
     /**
@@ -82,5 +82,4 @@ public interface Api {
 
     @GET("orders/completed")
     Single<PendingOrder> getCompletedOrder(@Query("orderNumber") String orderNumber);
-
 }

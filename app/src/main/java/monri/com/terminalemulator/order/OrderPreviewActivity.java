@@ -11,7 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pro100svitlo.creditCardNfcReader.CardNfcAsyncTask;
 import com.pro100svitlo.creditCardNfcReader.utils.CardNfcUtils;
@@ -25,9 +27,11 @@ import javax.inject.Inject;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import monri.com.terminalemulator.PaymentResponse;
 import monri.com.terminalemulator.PendingOrder;
 import monri.com.terminalemulator.R;
 import monri.com.terminalemulator.app.App;
+import monri.com.terminalemulator.payment_methods.PaymentMethodsActivity;
 
 public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAsyncTask.CardNfcInterface {
 
@@ -47,7 +51,11 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
 
     TextView totalPrice;
 
+    FrameLayout loadingView;
+
     LinearLayoutManager linearLayoutManager;
+
+    View paymentInProgress;
 
     OrderPreviewProductAdapter orderPreviewProductAdapter;
 
@@ -102,9 +110,47 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
             }
         });
 
+        final Disposable subscribe1 = viewModel.continueToPaymentMethodsPicker.subscribe(new Consumer<OrderPreviewViewModel.PaymentMethodsRequest>() {
+            @Override
+            public void accept(OrderPreviewViewModel.PaymentMethodsRequest paymentMethodsRequest) throws Exception {
+                navigateToPaymentMethodsRequest(paymentMethodsRequest);
+            }
+        });
+
+        final Disposable subscribe2 = viewModel.paymentInProgress.subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean aBoolean) throws Exception {
+                paymentInProgress.setVisibility(aBoolean ? View.VISIBLE : View.INVISIBLE);
+            }
+        });
+
+        final Disposable subscribe3 = viewModel.showRecyclerView.subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean aBoolean) throws Exception {
+                recyclerView.setVisibility(aBoolean ? View.VISIBLE : View.INVISIBLE);
+            }
+        });
+
+        final Disposable subscribe4 = viewModel.paymentResponse.subscribe(new Consumer<PaymentResponse>() {
+            @Override
+            public void accept(PaymentResponse paymentResponse) throws Exception {
+                Toast.makeText(OrderPreviewActivity.this, "Payment success", Toast.LENGTH_LONG).show();
+            }
+        });
+
         compositeDisposable.add(subscribe);
         compositeDisposable.add(loading);
         compositeDisposable.add(error);
+        compositeDisposable.add(subscribe1);
+        compositeDisposable.add(subscribe2);
+        compositeDisposable.add(subscribe3);
+        compositeDisposable.add(subscribe4);
+    }
+
+    private void navigateToPaymentMethodsRequest(OrderPreviewViewModel.PaymentMethodsRequest paymentMethodsRequest) {
+        // TODO: navigate to payment methods request
+        final Intent intent = PaymentMethodsActivity.createIntent(this, paymentMethodsRequest);
+        startActivity(intent);
     }
 
     private void handleError(Throwable throwable) {
@@ -112,14 +158,13 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
     }
 
     private void showLoadingScreen(Boolean aBoolean) {
-        // TODO: show loading screen
+        loadingView.setVisibility(aBoolean ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void setupRecyclerAdapter() {
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         orderPreviewProductAdapter = new OrderPreviewProductAdapter();
-
         recyclerView.setAdapter(orderPreviewProductAdapter);
     }
 
@@ -127,6 +172,9 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
         orderSummary = findViewById(R.id.order_summary);
         recyclerView = findViewById(R.id.my_recycler_view);
         totalPrice = findViewById(R.id.total_amount);
+        loadingView = findViewById(R.id.loading_view);
+        paymentInProgress = findViewById(R.id.payment_in_progress);
+
     }
 
     void setupNfc() {
@@ -188,7 +236,7 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
         String cardType = mCardNfcAsyncTask.getCardType();
         final String tag = Arrays.toString(mCardNfcAsyncTask.getTag().getId());
 
-        viewModel.cardScanned(tag);
+        viewModel.cardScanned(tag, card, expiredDate, cardType);
     }
 
     @Override

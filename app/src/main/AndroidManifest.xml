@@ -28,7 +28,8 @@
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
         </activity>
-        <activity android:name=".order.OrderPreviewActivity"></activity>
+        <activity android:name=".order.OrderPreviewActivity" />
+        <activity android:name=".payment_methods.PaymentMethodsActivity"></activity>
     </application>
 
 </manifest>

@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * TerminalEmulator
  */
 
-class EnrollmentStatus {
+public class EnrollmentStatus {
     /**
      * Enrollment status is currently: enrolled, not_enrolled.
      * <p>

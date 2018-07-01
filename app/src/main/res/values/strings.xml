@@ -6,4 +6,6 @@
     <string name="order_summary">Order Summary</string>
     <string name="total">Total</string>
     <string name="contactless_payment">Contactless payment</string>
+    <string name="total_placeholder">-</string>
+    <string name="payment_in_progress">Payment in progress</string>
 </resources>
