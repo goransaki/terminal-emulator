@@ -6,7 +6,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import monri.com.terminalemulator.Api;
@@ -24,6 +23,10 @@ public class OrderPreviewViewModel {
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     final PublishSubject<List<Product>> behaviorSubject = PublishSubject.create();
+    final PublishSubject<PendingOrder> pendingOrder = PublishSubject.create();
+
+    final PublishSubject<Boolean> isLoading = PublishSubject.create();
+    final PublishSubject<Throwable> error = PublishSubject.create();
 
     OrderPreviewViewModel(Api api, String orderNumber) {
         this.api = api;
@@ -32,27 +35,25 @@ public class OrderPreviewViewModel {
     }
 
     void load() {
-        // TODO: add all expand parts
-        final Disposable subscribe = api.getPendingOrder(orderNumber, "products").map(new Function<PendingOrder, List<Product>>() {
-            @Override
-            public List<Product> apply(PendingOrder pendingOrder) throws Exception {
-                return pendingOrder.getProducts();
-            }
-        }).subscribeOn(Schedulers.io())
+
+        isLoading.onNext(true);
+
+        final Disposable products = api.getPendingOrder(orderNumber, "products")
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<Product>>() {
+                .subscribe(new Consumer<PendingOrder>() {
                     @Override
-                    public void accept(List<Product> products) throws Exception {
-                        behaviorSubject.onNext(products);
+                    public void accept(PendingOrder pendingOrder) throws Exception {
+                        OrderPreviewViewModel.this.pendingOrder.onNext(pendingOrder);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        throwable.printStackTrace();
+                        error.onNext(throwable);
                     }
                 });
 
-        disposable.add(subscribe);
+        disposable.add(products);
     }
 
     void dispose() {

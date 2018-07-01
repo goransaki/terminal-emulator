@@ -26,4 +26,15 @@ public class PendingOrder {
     public int getId() {
         return id;
     }
+
+    public int totalPrice() {
+
+        int price = 0;
+
+        for (Product product : products) {
+            price = price + product.getPrice() * product.getQuantity();
+        }
+
+        return price;
+    }
 }

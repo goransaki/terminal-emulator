@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import monri.com.terminalemulator.PendingOrder;
 import monri.com.terminalemulator.R;
 import monri.com.terminalemulator.app.App;
 
@@ -71,16 +72,47 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
 
         setupNfc();
 
-        viewModel.load();
+        bindEvents();
 
-        final Disposable subscribe = viewModel.behaviorSubject.subscribe(new Consumer<List<Product>>() {
+        viewModel.load();
+    }
+
+    private void bindEvents() {
+
+        final Disposable loading = viewModel.isLoading.subscribe(new Consumer<Boolean>() {
             @Override
-            public void accept(List<Product> products) throws Exception {
+            public void accept(Boolean aBoolean) throws Exception {
+                showLoadingScreen(aBoolean);
+            }
+        });
+
+        final Disposable error = viewModel.error.subscribe(new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                handleError(throwable);
+            }
+        });
+
+        final Disposable subscribe = viewModel.pendingOrder.subscribe(new Consumer<PendingOrder>() {
+            @Override
+            public void accept(PendingOrder pendingOrder) throws Exception {
+                final List<Product> products = pendingOrder.getProducts();
                 orderPreviewProductAdapter.setProducts(products);
+                totalPrice.setText(String.format("RSD %d", pendingOrder.totalPrice()));
             }
         });
 
         compositeDisposable.add(subscribe);
+        compositeDisposable.add(loading);
+        compositeDisposable.add(error);
+    }
+
+    private void handleError(Throwable throwable) {
+        // TODO
+    }
+
+    private void showLoadingScreen(Boolean aBoolean) {
+        // TODO: show loading screen
     }
 
     private void setupRecyclerAdapter() {
@@ -201,7 +233,7 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
 
             holder.name.setText(product.getName());
             holder.quantity.setText(String.valueOf(product.getQuantity()));
-            holder.price.setText(String.format("%d DIN", product.getQuantity()));
+            holder.price.setText(String.format("%d RSD", product.getQuantity()));
         }
 
         public void setProducts(List<Product> products) {
