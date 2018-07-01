@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">TerminalEmulator</string>
+    <string name="welcome_to_shop">Welcome to Maxi Shop</string>
+    <string name="example_one">Example one</string>
+    <string name="example_two">Example two</string>
+    <string name="order_summary">Order Summary</string>
+    <string name="total">Total</string>
+    <string name="contactless_payment">Contactless payment</string>
 </resources>
