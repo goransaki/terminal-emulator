@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Product {
+
     String name;
     @SerializedName("quantity")
     int quantity;
@@ -30,5 +31,9 @@ public class Product {
 
     public int getPrice() {
         return price;
+    }
+
+    public int getTotalPrice() {
+        return price * quantity;
     }
 }

@@ -281,7 +281,7 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
 
             holder.name.setText(product.getName());
             holder.quantity.setText(String.valueOf(product.getQuantity()));
-            holder.price.setText(String.format("%d RSD", product.getQuantity()));
+            holder.price.setText(String.format("%d RSD", product.getTotalPrice()));
         }
 
         public void setProducts(List<Product> products) {

@@ -2,6 +2,8 @@ package monri.com.terminalemulator.order;
 
 import android.util.Log;
 
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -34,10 +36,21 @@ public class OrderPreviewViewModel {
     final PublishSubject<PaymentMethodsRequest> continueToPaymentMethodsPicker = PublishSubject.create();
     final PublishSubject<PaymentResponse> paymentResponse = PublishSubject.create();
 
+    private boolean blockNewPayments;
+
     OrderPreviewViewModel(Api api, String orderNumber) {
         this.api = api;
-
         this.orderNumber = orderNumber;
+
+
+        final Disposable subscribe = paymentInProgress.subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean aBoolean) throws Exception {
+                blockNewPayments = aBoolean;
+            }
+        });
+
+        disposable.add(subscribe);
     }
 
     void load() {
@@ -71,6 +84,11 @@ public class OrderPreviewViewModel {
     }
 
     void cardScanned(final String tag, final String pan, final String card, final String expDate) {
+
+        if (blockNewPayments) {
+            return;
+        }
+
         // execute payment on this screen?
 
         paymentInProgress.onNext(true);
@@ -79,6 +97,7 @@ public class OrderPreviewViewModel {
                 .getEnrollmentStatus("card", tag)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .delay(500, TimeUnit.MILLISECONDS)
                 .subscribe(new Consumer<EnrollmentStatus>() {
                     @Override
                     public void accept(EnrollmentStatus enrollmentStatus) throws Exception {

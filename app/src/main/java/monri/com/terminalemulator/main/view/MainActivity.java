@@ -1,14 +1,12 @@
 package monri.com.terminalemulator.main.view;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
-import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-
-import com.pro100svitlo.creditCardNfcReader.CardNfcAsyncTask;
-import com.pro100svitlo.creditCardNfcReader.utils.CardNfcUtils;
 
 import javax.inject.Inject;
 
@@ -21,16 +19,16 @@ import monri.com.terminalemulator.order.OrderPreviewActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private NfcAdapter mNfcAdapter;
-    private CardNfcUtils mCardNfcUtils;
-    private boolean mIntentFromCreate;
-    private CardNfcAsyncTask mCardNfcAsyncTask;
-
     @Inject
     MainViewModel mainViewModel;
 
     public static Intent createIntent(Context context) {
         return new Intent(context, MainActivity.class);
+    }
+
+    public static void setupToolbar(AppCompatActivity appCompatActivity, Toolbar toolbar) {
+        appCompatActivity.setSupportActionBar(toolbar);
+        final ActionBar actionBar = appCompatActivity.getActionBar();
     }
 
     @Override

@@ -71,15 +71,13 @@ public interface Api {
 
     @GET("orders/pending")
     Single<PendingOrder> getPendingOrder(
-            @Query("orderNumber") String orderNumber
-    );
-
-    @GET("orders/pending")
-    Single<PendingOrder> getPendingOrder(
             @Query("orderNumber") String orderNumber,
             @Query("expand") String expand
     );
 
     @GET("orders/completed")
     Single<PendingOrder> getCompletedOrder(@Query("orderNumber") String orderNumber);
+
+    @GET("user/pm")
+    Single<PaymentMethodsResponse> getPaymentMethods(@Query("user_id") String userId);
 }

@@ -10,6 +10,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import monri.com.terminalemulator.Api;
+import monri.com.terminalemulator.ApiDemo;
+import monri.com.terminalemulator.ApiProxy;
 import monri.com.terminalemulator.app.App;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -82,7 +84,7 @@ public class AppModule {
 
     @Singleton
     @Provides
-    public Api provideApi(Retrofit retrofit) {
-        return retrofit.create(Api.class);
+    Api provideApi(Retrofit retrofit, App app) {
+        return new ApiProxy(retrofit.create(Api.class), new ApiDemo(app.getApplicationContext()));
     }
 }
