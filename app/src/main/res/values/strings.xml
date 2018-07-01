@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">TerminalEmulator</string>
     <string name="welcome_to_shop">Welcome to Maxi Shop</string>
-    <string name="example_one">Example one</string>
+    <string name="example_one">Payment Demo</string>
     <string name="example_two">Example two</string>
     <string name="order_summary">Order Summary</string>
     <string name="total">Total</string>
@@ -10,4 +10,6 @@
     <string name="payment_in_progress">Payment in progress</string>
     <string name="pick_payment_method">Pick payment method</string>
     <string name="pay">Pay</string>
+    <string name="payment_success">Payment Success!</string>
+    <string name="pleasure">Its our pleasure to \noffer you our products</string>
 </resources>

@@ -44,13 +44,6 @@ public class MainActivity extends AppCompatActivity {
                 exampleOne();
             }
         });
-
-        findViewById(R.id.example_two).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                exampleTwo();
-            }
-        });
     }
 
     private void exampleOne() {

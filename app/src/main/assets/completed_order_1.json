@@ -21,6 +21,22 @@
       "quantity": 1,
       "name": "Luk Crni",
       "price": 44
+    },
+    {
+      "id": 14,
+      "order_id": 1,
+      "product_id": 2,
+      "quantity": 1,
+      "name": "Limun",
+      "price": 150
+    },
+    {
+      "id": 15,
+      "order_id": 1,
+      "product_id": 4,
+      "quantity": 2,
+      "name": "Krastavac",
+      "price": 59
     }
   ]
 }

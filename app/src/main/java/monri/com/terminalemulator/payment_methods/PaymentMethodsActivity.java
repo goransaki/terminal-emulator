@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +43,12 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
     Adapter adapter;
 
+    View success;
+
+    View content;
+
+    View loading;
+
     CompositeDisposable disposable = new CompositeDisposable();
 
     public static Intent createIntent(Context context, OrderPreviewViewModel.PaymentMethodsRequest paymentMethodsRequest) {
@@ -51,14 +59,29 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         return intent;
     }
 
+    void back() {
+        final ActionBar supportActionBar = getSupportActionBar();
+        supportActionBar.setDisplayHomeAsUpEnabled(true);
+        supportActionBar.setDisplayShowHomeEnabled(true);
+
+        supportActionBar.setHomeAsUpIndicator(R.drawable.back);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_methods);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        back();
+
         OrderPreviewViewModel.PaymentMethodsRequest paymentMethodsRequest = fromIntent();
         final PaymentMethodsComponent component = App.getApp(this).getAppComponent().plus(new PaymentMethodsModule(paymentMethodsRequest));
         component.inject(this);
+
+        getSupportActionBar().setTitle(String.format("Order %s", paymentMethodsRequest.getOrderNumber()));
 
         loadViews();
         setupRecyclerView();
@@ -77,6 +100,27 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         });
 
         disposable.add(subscribe);
+
+        viewModel.loading.subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean aBoolean) throws Exception {
+                loading.setVisibility(aBoolean ? View.VISIBLE : View.INVISIBLE);
+            }
+        });
+
+        viewModel.content.subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean aBoolean) throws Exception {
+                content.setVisibility(aBoolean ? View.VISIBLE : View.INVISIBLE);
+            }
+        });
+
+        viewModel.trxSuccess.subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean aBoolean) throws Exception {
+                success.setVisibility(aBoolean ? View.VISIBLE : View.INVISIBLE);
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -84,7 +128,8 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         adapter = new Adapter(new ArrayList<PaymentMethod>(), new Consumer<PaymentMethod>() {
             @Override
             public void accept(PaymentMethod paymentMethod) throws Exception {
-                viewModel.payWith(paymentMethod);
+                viewModel
+                        .payWith(paymentMethod);
             }
         });
         paymentMethodsRecyclerView.setLayoutManager(linearLayoutManager);
@@ -94,6 +139,9 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     private void loadViews() {
         toolbar = findViewById(R.id.toolbar);
         paymentMethodsRecyclerView = findViewById(R.id.payment_methods);
+        success = findViewById(R.id.trx_success);
+        content = findViewById(R.id.payment_methods_content);
+        loading = findViewById(R.id.payment_in_progress);
     }
 
     @Override
@@ -156,7 +204,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         final TextView balance;
 
 
-
         PaymentMethodViewHolder(View itemView) {
             super(itemView);
             this.cardView = (CardView) itemView;
@@ -205,13 +252,13 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 imageView.setImageResource(imageResource);
             }
 
-            this.cardView.setOnClickListener(new View.OnClickListener() {
+            this.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     try {
                         clickHandler.accept(paymentMethod);
                     } catch (Exception ignored) {
-
+                        ignored.printStackTrace();
                     }
                 }
             });

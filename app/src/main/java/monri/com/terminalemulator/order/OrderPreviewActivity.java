@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +59,8 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
 
     View paymentInProgress;
 
+    View trxSuccess;
+
     OrderPreviewProductAdapter orderPreviewProductAdapter;
 
     public static Intent createIntent(Context context, String orderNumber) {
@@ -65,12 +69,29 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
         return intent;
     }
 
+    void back() {
+        final ActionBar   supportActionBar = getSupportActionBar();
+        supportActionBar.setDisplayHomeAsUpEnabled(true);
+        supportActionBar.setDisplayShowHomeEnabled(true);
+
+        supportActionBar.setHomeAsUpIndicator(R.drawable.back);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_preview);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+
+
+        back();
+
         final String orderNumber = getIntent().getStringExtra("order_number");
+
+        getSupportActionBar().setTitle(String.format("Order %s", orderNumber));
 
         App.getApp(this).getAppComponent().plus(new OrderPreviewModule(orderNumber)).inject(this);
 
@@ -134,7 +155,7 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
         final Disposable subscribe4 = viewModel.paymentResponse.subscribe(new Consumer<PaymentResponse>() {
             @Override
             public void accept(PaymentResponse paymentResponse) throws Exception {
-                Toast.makeText(OrderPreviewActivity.this, "Payment success", Toast.LENGTH_LONG).show();
+                trxSuccess.setVisibility(View.VISIBLE);
             }
         });
 
@@ -174,6 +195,7 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
         totalPrice = findViewById(R.id.total_amount);
         loadingView = findViewById(R.id.loading_view);
         paymentInProgress = findViewById(R.id.payment_in_progress);
+        trxSuccess = findViewById(R.id.trx_success);
 
     }
 
@@ -226,7 +248,7 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
 
     @Override
     public void startNfcReadCard() {
-
+        Toast.makeText(this, "Started NFC read card", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -241,7 +263,7 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
 
     @Override
     public void doNotMoveCardSoFast() {
-
+        Toast.makeText(this, "Do not move card so fast", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -281,7 +303,7 @@ public class OrderPreviewActivity extends AppCompatActivity implements CardNfcAs
 
             holder.name.setText(product.getName());
             holder.quantity.setText(String.valueOf(product.getQuantity()));
-            holder.price.setText(String.format("%d RSD", product.getTotalPrice()));
+            holder.price.setText(String.format("RSD %d", product.getTotalPrice()));
         }
 
         public void setProducts(List<Product> products) {

@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".main.view.MainActivity">
+        <activity android:name=".main.view.MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,8 +28,12 @@
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
         </activity>
-        <activity android:name=".order.OrderPreviewActivity" />
-        <activity android:name=".payment_methods.PaymentMethodsActivity"></activity>
+        <activity
+            android:name=".order.OrderPreviewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".payment_methods.PaymentMethodsActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
